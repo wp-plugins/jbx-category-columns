@@ -38,6 +38,11 @@ The default number of posts per category the plugin will show is 4. You can spec
 
 Styles can be edited in the stylesheet included in the jbx-catcolumns plugin folder. The file is entitled `jbxCatColumns-style.css`.
 
+== Screenshots == 
+
+1. Admin options
+2. Frontend example
+
 
 == Changelog ==
 
