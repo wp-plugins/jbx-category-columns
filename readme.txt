@@ -29,12 +29,12 @@ JBX Category Columns displays any number latest posts from selected categories i
 
 Add the following tag to any template file. Keep the tag outside the loop. 
 
-<?php display_jbxCatColumns(); ?>
+`<?php display_jbxCatColumns(); ?>`
 
 The default number of posts per category the plugin will show is 4. You can specify the number of posts to show in each category by passing a number to to the function. See below:
 
-<?php display_jbxCatColumns(3); ?> // Displays 3 posts
-<?php display_jbxCatColumns(7); ?> // Displays 7 posts
+`<?php display_jbxCatColumns(3); ?>` // Displays 3 posts
+`<?php display_jbxCatColumns(7); ?>` // Displays 7 posts
 
 Styles can be edited in the stylesheet included in the jbx-catcolumns plugin folder. The file is entitled `jbxCatColumns-style.css`.
 
