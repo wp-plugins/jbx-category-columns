@@ -7,7 +7,7 @@ Contributors: thejaybuddy
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LVMLAE6L2U8V2&lc=US&item_name=Jaybuddy%2c%20Inc&item_number=1234&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: category, category posts, category columns, columns, thejaybuddy, post columns
 Requires at least: 3.4.0
-Tested up to: 3.9
+Tested up to: 4.1
 Stable tag: trunk
 Version: 1.0
 License: GPLv2 or later
