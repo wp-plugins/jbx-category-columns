@@ -1,7 +1,6 @@
 === JBX Category Columns ===
 Contributors: thejaybuddy
 Tags: category, category posts, category columns, columns, thejaybuddy, post columns
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=LVMLAE6L2U8V2&lc=US&item_name=Jaybuddy%2c%20Inc&item_number=1234¤cy_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Requires at least: 3.4
 Tested up to: 4.1
 Stable tag: 1.1
