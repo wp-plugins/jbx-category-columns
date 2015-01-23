@@ -2,8 +2,8 @@
 /*
  Plugin Name: JBX Category Columns
  Plugin URI: http://www.jaybuddy.com/
- Description: This plugin displays x number of posts in each category in columns of 2, 3, 4, 5, or 6.
- Version: 1.0
+ Description: This plugin displays x number of posts in each category in 2-6 columns.
+ Version: 1.1
  Author: Jay Pedersen
  Author URI: http://www.jaybuddy.com/
  */
@@ -23,94 +23,36 @@
  */
 
 class jbxCatColumns {
-	
-	var $optionsPage = 'jbxCatColumnsOptions';
-	
+
 	function __construct() {
-		add_action( 'admin_menu', array( $this, 'adminPage' ) );
-	}
-	
-	function loadOptionsPage() {
-		require_once ('jbxCatColumnsOptions.php');
-	}
-	
-	function adminPage() {
-		add_options_page( 'JBX Category Columns', 'JBX Category Columns', 'manage_options', 'jbxCatColumnsOptions', array($this, 'loadOptionsPage') );
-	}
-	
-	function jbx_activate() {
-		
-		if (get_option('jbxCatColumns_Archive')) {
-			$options = unserialize(get_option('jbxCatColumns_Archive'));
-			
-			//Get the archived options and put them back where they belong//
-			update_option('jbxCatColumns_cols', $options['jbxCatColumns_cols']);
-			update_option('jbxCatColumns_feat', $options['jbxCatColumns_feat']);
-			update_option('jbxCatColumns_cats', $options['jbxCatColumns_cats']);
-			
-			delete_option('jbxCatColumns_Archive');
-		}
-		
-	}
-	
-	function jbx_deactivate() {
-		
-		//Get all the plugin options and store them in an array/
-		$options = array();
-		$options['jbxCatColumns_cols'] = get_option('jbxCatColumns_cols');
-		$options['jbxCatColumns_feat'] = get_option('jbxCatColumns_feat');
-		$options['jbxCatColumns_cats'] = get_option('jbxCatColumns_cats');
-		
-		//Save all the individual options in 1 record, incase plugin is reactivated//
-		update_option('jbxCatColumns_Archive', serialize($options));
-		
-		//Now Delete all the individual options since we have them stored as 1 record//
-		delete_option('jbxCatColumns_cols');
-		delete_option('jbxCatColumns_feat');
-		delete_option('jbxCatColumns_cats');
-	}
-	
-	/* Upon delete, get rid of the settings data */
-	function jbxPlugin_delete() {
-		delete_option('jbxCatColumns_Archive');
+		add_action( 'wp_enqueue_scripts', array( $this, 'jbxCatColumnsStyles' ) );
+		add_shortcode( 'jbx', array( $this, 'jbx_shortcode' ) );
 	}
 
-	function getNumCols() {
-		if (get_option('jbxCatColumns_cols') != false) {
-			$field = get_option('jbxCatColumns_cols');
-			return $field;
-		} else {
-			return '';
-		}
+	function jbxCatColumnsStyles() {
+    	wp_enqueue_style( 'jbxCatColumnsStyles', plugin_dir_url( __FILE__ ) . 'jbxCatColumns-style.css', array(), '1.1', 'screen' );
 	}
-	
-	function getFeat() {
-		if (get_option('jbxCatColumns_feat') != false) {
-			$field = get_option('jbxCatColumns_feat');
-			return $field;
-		} else {
-			return '';
+
+	// [jbx columns='3' names='name1, name2, name3' numberposts='5' images='true'] //
+	function jbx_shortcode( $atts ) {
+		$a = shortcode_atts( array(
+			'columns' => '3',
+			'names' => '',
+			'numberposts' => '3',
+			'images' => 'true'
+		), $atts);
+
+		$cats = explode( ',', str_replace( " " , "", $a['names'] ) );
+
+		//Check to make sure we have the same number of categories as columns//
+		$cat_count = count($cats);
+
+		//If we have more columns than categories, adjust the columns to be equal to categories.//
+		if ( $a['columns'] > $cat_count ) {
+			$a['columns'] = $cat_count;
 		}
-	}
-	
-	function getSelectedCats() {
-		if (get_option('jbxCatColumns_cats') != false) {
-			$field = get_option('jbxCatColumns_cats');
-			return $field;
-		} else {
-			return '';
-		}
-	}
-	
-	function display($n) {
 		
-		//Grab options from the DB//
-		$cols = get_option('jbxCatColumns_cols');
-		$feat = get_option('jbxCatColumns_feat');
-		$cats = unserialize(get_option('jbxCatColumns_cats'));
-		
-		//Get setup the column classes//
-		switch ($cols) {
+		switch ($a['columns']) {
 			case 2: $col_class = 'jbx_one_half'; break;
 			case 3: $col_class = 'jbx_one_third'; break;
 			case 4: $col_class = 'jbx_one_forth'; break;
@@ -118,32 +60,29 @@ class jbxCatColumns {
 			case 6: $col_class = 'jbx_one_sixth'; break;
 		}
 		
-		$num_cats = count($cats);
-		
-		//Setup Column HTML//
 		$html = "";
-		
 		$html .="<div id='jbx-wrap'>";
-		for ($i=1; $i<=$num_cats; $i++) { 
-			$cat_name = get_category($cats[$i-1]);
+
+		for ($i=1; $i<=$a['columns']; $i++) { 
+
+			$cat_ID = get_cat_ID( $cats[$i-1] );
+			$cat = get_category( $cat_ID );
 			
-			$posts = get_posts(array('posts_per_page' => $n, 'category' => $cats[$i-1]));
-			
+			$posts = get_posts( array( 'posts_per_page' => $a['numberposts'], 'category_name' => $cat->name ) );
 			
 			$html .="<div class='".$col_class." jbx-block'>";
-				$html .="<h3><a href=".get_category_link($cat_name->term_id).">".$cat_name->name."</a></h3>";
+				$html .="<h3><a href=".get_category_link($cat->term_id).">".$cat->name."</a></h3>";
 				
 				foreach ($posts as $p) {
 					$html .="<div class='jbx-item-wrap'>";
-					if ($feat == 1) {
+					if ($feat == 'true') {
 						if ($n == 0) {
 							if (has_post_thumbnail( $p->ID ) ) {
 								$image = wp_get_attachment_image_src( get_post_thumbnail_id( $p->ID ), 'single-post-thumbnail' ); 
 								$html .="<div class='jbx-feat-img'><img src='".$image[0]."' alt='alt' /></div>";
 							}
 						}
-					} elseif ($feat == 2) {
-						
+					} else {
 						if (has_post_thumbnail( $p->ID ) ) {
 							$image = wp_get_attachment_image_src( get_post_thumbnail_id( $p->ID ), 'single-post-thumbnail' ); 
 							$html .="<div class='jbx-feat-img'><img src='".$image[0]."' alt='alt' /></div>";
@@ -155,7 +94,7 @@ class jbxCatColumns {
 				}
 				
 			$html .="</div>";
-			if ($i % $cols == 0)  {
+			if ($i % $a['columns'] == 0)  {
 				$html .="<div class='jbx-clear'></div>";
 			}
 			
@@ -163,27 +102,9 @@ class jbxCatColumns {
 		$html .="<div class='jbx-clear'></div>";
 		$html .="</div>";
 					
-		echo $html;
-	
+		return $html;
 	}
 	
 }
 
-
 $jbxCatColumns = new jbxCatColumns();
-
-function display_jbxCatColumns($n = 4) {
-	Global $jbxCatColumns;
-	$jbxCatColumns->display($n);
-}
-
-/* Register activate/deactivate functions */
-register_activation_hook(__FILE__, array($jbxCatColumns, 'jbx_activate'));
-register_deactivation_hook(__FILE__, array($jbxCatColumns, 'jbx_deactivate'));
-register_uninstall_hook(__FILE__, array($jbxCatColumns, 'jbxPlugin_delete'));
-
-function jbxCatColumnsStyles() {
-    wp_enqueue_style( 'jbxCatColumnsStyles', plugin_dir_url( __FILE__ ) . 'jbxCatColumns-style.css', array(), '1.0', 'screen' );
-}
-
-add_action( 'wp_enqueue_scripts', 'jbxCatColumnsStyles' );
