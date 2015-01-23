@@ -1,0 +1,93 @@
+#jbx-wrap {
+	width:100%;
+	margin:20px 0;
+}
+
+	
+.jbx_one_half {
+	width:49.5%;
+	margin-left:0.5%;
+	float:left;
+}
+
+	.jbx_one_half:last_of_type {
+		margin-left:0%;
+	}
+
+.jbx_one_third {
+	width:32%;
+	margin-left:1%;
+	float:left;
+}
+
+	.jbx_one_third:last-of-type {
+		margin-left:0%;
+	}
+
+.jbx_one_forth {
+	width:24%;
+	margin-left:1%;
+	float:left;
+}
+
+	.jbx_one_forth:last-of-type {
+		margin-left:0%;
+	}
+
+.jbx_one_fifth {
+	width:19%;
+	margin-left:1%;
+	float:left;
+}
+
+	.jbx_one_fifth:last-of-type {
+		margin-left:0%;
+	}
+
+.jbx_one_sixth {
+	width:15.2%;
+	margin-left:1%;
+	float:left;
+}
+
+	.jbx_one_sixth:last-of-type {
+		margin-left:0%;
+	}
+
+#jbx-wrap .jbx-item-wrap {
+	padding:10px 0 10px;
+	border-bottom:1px solid #CCC;
+	
+}
+#jbx-wrap h3 {
+	border-top:3px solid #CCC;
+	border-bottom:1px solid #CCC;
+	display:block;
+	width:100%;
+	padding:5px 0 3px;
+}
+
+	#jbx-wrap h3 a {
+		font-size:20px;
+	}
+
+		
+#jbx-wrap .jbx-date {
+	font-size:12px;
+	padding:0px;
+}
+
+#jbx-wrap .jbx-title a {
+	display:block;
+	font-size:16px;
+	font-weight:bold;
+	padding-top:5px;
+}
+
+#jbx-wrap .jbx-block {
+	margin-bottom:30px;
+}
+
+.jbx-clear {
+	clear:both;
+}
